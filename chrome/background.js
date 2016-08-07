@@ -9,6 +9,7 @@ chrome.runtime.onConnect.addListener(function( port ) {
 		port.onMessage.addListener(function( message ) {
 			console.log( 'from devtools', message );
 			var target = connections[ connectionName + '-page' ];
+			// TODO: cache message if '...-page' connection is not come up yet
 			if( target ) {
 				process( message );
 				target.postMessage( message );

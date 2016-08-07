@@ -30,10 +30,24 @@ body {
 	overflow: hidden;
 }
 
+.hbox {
+	display: flex;
+	flex-direction: row !important;
+	position: relative;
+}
+
 .vbox {
 	display: flex;
 	flex-direction: column !important;
 	position: relative;
+}
+
+.flex-auto {
+	flex: auto;
+}
+
+.flex-none {
+	flex: 0;
 }
 
 table {
@@ -202,4 +216,17 @@ td.name-column:hover {
 
 .data-container tr.selected .network-cell-subtitle {
 	color: #FFF;
+}
+
+.split-resizer {
+	cursor: ew-resize;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 6px;
+	z-index: 500;
+}
+
+.brief {
+	border-right: 1px solid #a3a3a3;
 }
