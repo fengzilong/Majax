@@ -194,3 +194,12 @@ td.name-column:hover {
 .odd {
 	background: #f5f5f5;
 }
+
+.data-container tr.selected {
+	background-color: #3879d9;
+	color: #FFF;
+}
+
+.data-container tr.selected .network-cell-subtitle {
+	color: #FFF;
+}

@@ -5,26 +5,26 @@ var App = Regular.extend({
 				<colgroup>
 					<col style="width: 220px;">
 					<col style="width: 107px;">
-					<col style="width: 77px;">
+					<col style="width: 107px;">
 					<col style="width: 119px;">
 					<col style="width: 148px;">
 					<col class="corner">
 				</colgroup>
 				<tbody>
 					<tr>
-						<th class="name-column sortable">
+						<th class="name-column">
 							<div>Name<div class="network-header-subtitle">Path</div></div><div class="sort-order-icon-container"><div class="sort-order-icon"></div></div>
 						</th>
-						<th class="status-column sortable">
+						<th class="status-column">
 							<div>Status<div class="network-header-subtitle">Text</div></div><div class="sort-order-icon-container"><div class="sort-order-icon"></div></div>
 						</th>
-						<th class="type-column sortable">
+						<th class="type-column">
 							<div>Type</div><div class="sort-order-icon-container"><div class="sort-order-icon"></div></div>
 						</th>
-						<th class="size-column sortable">
+						<th class="size-column">
 							<div>Size<div class="network-header-subtitle">Content</div></div><div class="sort-order-icon-container"><div class="sort-order-icon"></div></div>
 						</th>
-						<th class="time-column sortable">
+						<th class="time-column">
 							<div>Time<div class="network-header-subtitle">Latency</div></div><div class="sort-order-icon-container"><div class="sort-order-icon"></div></div>
 						</th>
 						<th class="corner"></th>
@@ -38,13 +38,13 @@ var App = Regular.extend({
 				<colgroup>
 					<col style="width: 220px;">
 					<col style="width: 107px;">
-					<col style="width: 77px;">
+					<col style="width: 107px;">
 					<col style="width: 119px;">
 					<col style="width: 148px;">
 					<col class="corner">
 				</colgroup>
 				<tbody>
-					<tr class="data-grid-filler-row revealed" style="height: 0px;">
+					<tr class="data-grid-filler-row" style="height: 0px;">
 						<td class="top-filler-td"></td>
 						<td class="top-filler-td"></td>
 						<td class="top-filler-td"></td>
@@ -54,7 +54,10 @@ var App = Regular.extend({
 					</tr>
 
 					{#list networkLogs as v}
-					<tr class="revealed { v_index % 2 !== 0 ? 'odd' : '' } { v.request.response._error ? 'network-error-row' : '' }">
+					<tr
+						class="{ v_index % 2 !== 0 ? 'odd' : '' } { v.request.response._error ? 'network-error-row' : '' } { v === selected ? 'selected' : '' }"
+						on-click="{ this.onRowClicked( v ) }"
+					>
 						<td class="name-column" title="{ v.request.request.url }">
 							{#if v.request.response.content.mimeType.indexOf( 'image/' ) === 0 && v.content}
 								<div class="icon image"><img class="image-network-icon-preview" src="data:{ v.request.response.content.mimeType };base64,{ v.content }"></div>
@@ -104,7 +107,7 @@ var App = Regular.extend({
 					</tr>
 					{/list}
 
-					<tr class="data-grid-filler-row revealed" style="height: auto;">
+					<tr class="data-grid-filler-row" style="height: auto;">
 						<td class="bottom-filler-td"></td>
 						<td class="bottom-filler-td"></td>
 						<td class="bottom-filler-td"></td>
@@ -124,6 +127,9 @@ var App = Regular.extend({
 			self.data.networkLogs.push( message );
 			self.$update();
 		});
+	},
+	onRowClicked: function( v ) {
+		this.data.selected = v;
 	}
 });
 
