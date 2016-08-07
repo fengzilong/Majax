@@ -159,6 +159,26 @@ td.name-column:hover {
 	content: url(/images/resourceJSIcon.png)
 }
 
+.icon.image {
+	position: relative;
+	background-image: url(Images/resourcePlainIcon.png);
+	background-repeat: no-repeat;
+	content: "";
+}
+
+.image-network-icon-preview {
+	position: absolute;
+	margin: auto;
+	top: 3px;
+	bottom: 4px;
+	left: 5px;
+	right: 5px;
+	max-width: 18px;
+	max-height: 21px;
+	min-width: 1px;
+	min-height: 1px;
+}
+
 .network-error-row, .network-error-row .network-cell-subtitle {
 	color: rgb(230, 0, 0);
 }

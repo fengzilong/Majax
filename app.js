@@ -56,7 +56,11 @@ var App = Regular.extend({
 					{#list networkLogs as v}
 					<tr class="revealed { v_index % 2 !== 0 ? 'odd' : '' } { v.request.response._error ? 'network-error-row' : '' }">
 						<td class="name-column" title="{ v.request.request.url }">
-							<img class="icon">
+							{#if v.request.response.content.mimeType.indexOf( 'image/' ) === 0 && v.content}
+								<div class="icon image"><img class="image-network-icon-preview" src="data:{ v.request.response.content.mimeType };base64,{ v.content }"></div>
+							{#else}
+								<img class="icon">
+							{/if}
 							{ v.request.request.path || '/' }
 							<div class="network-cell-subtitle">
 								{ v.request.request.domain }
