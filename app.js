@@ -58,6 +58,12 @@ var App = Regular.extend({
 						<td class="name-column" title="{ v.request.request.url }">
 							{#if v.request.response.content.mimeType.indexOf( 'image/' ) === 0 && v.content}
 								<div class="icon image"><img class="image-network-icon-preview" src="data:{ v.request.response.content.mimeType };base64,{ v.content }"></div>
+							{#elseif v.request.response.content.mimeType === 'text/html'}
+								<img class="icon document">
+							{#elseif v.request.response.content.mimeType === 'application/javascript'}
+								<img class="icon script">
+							{#elseif v.request.response.content.mimeType === 'text/css'}
+								<img class="icon stylesheet">
 							{#else}
 								<img class="icon">
 							{/if}

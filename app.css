@@ -159,6 +159,14 @@ td.name-column:hover {
 	content: url(/images/resourceJSIcon.png)
 }
 
+.icon.stylesheet {
+	content: url(/images/resourceCSSIcon.png)
+}
+
+.icon.document {
+	content: url(/images/resourceDocumentIcon.png);
+}
+
 .icon.image {
 	position: relative;
 	background-image: url(Images/resourcePlainIcon.png);
