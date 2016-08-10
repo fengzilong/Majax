@@ -4,13 +4,13 @@
 			wildcard: "wildcard",
 			regexp: "regexp"
 		},
-		wildcardToRegexp: function(pattern) {
+		wildcardToRegexp: function( pattern ) {
 			pattern = pattern.replace(/([\\\+\|\{\}\[\]\(\)\^\$\.#])/g, "\\$1");
 			pattern = pattern.replace(/\*/g, ".*");
 			pattern = pattern.replace(/\?/g, ".");
 			return pattern;
 		},
-		ruleToExpr: function(rule) {
+		ruleToExpr: function( rule ) {
 			var urlPattern = rule.urlPattern || "";
 
 			// Check Non-ASCII chars
@@ -60,34 +60,41 @@
 
 			return script + ")";
 		},
-		generatePacScript: function (rules) {
+		generatePacScript: function( rules ) {
 			var script = "";
-			var i;
 
-			script += "function regExpMatch(url, pattern) {\
-		    try { return new RegExp(pattern).test(url); } catch(ex) { return false; }\
-		    }\n\
-		    function FindProxyForURL(url) {\n";
+			script += `
+				function regExpMatch(url, pattern) {
+					try {
+						return new RegExp( pattern ).test( url );
+					} catch(ex) {
+						return false;
+					}
+				}
+				function FindProxyForURL( url ) {
+			`;
 
 			var proxy;
-			for (i in rules) {
-				if (rules.hasOwnProperty(i)) {
-					var rule = rules[i];
-					var expr = RuleManager.ruleToExpr(rule);
-					if (rule.proxy) { // predefined proxy (see |generateAutoPacScript|)
-						proxy = rule.proxy;
-					} else {
-						//TODO
-						proxy = '"PROXY 127.0.0.1:8887"';
-					}
-					script += "\tif " + expr + " return " + proxy + ";\n";
+
+			rules.forEach(function( rule ) {
+				var expr = RuleManager.ruleToExpr( rule );
+				if( rule.proxy ) { // predefined proxy (see |generateAutoPacScript|)
+					proxy = rule.proxy;
+				} else {
+					//TODO
+					proxy = '"PROXY 127.0.0.1:8887"';
 				}
-			}
+				script += `
+					if${expr} {
+						return ${proxy};
+					}
+				`;
+			});
 
-			proxy = '"DIRECT"';
-			script += "\treturn " + proxy + ";\n}";
-
-			console.log(script);
+			script += `
+					return "DIRECT";
+				}
+			`;
 
 			return script;
 		}

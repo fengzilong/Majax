@@ -1,26 +1,26 @@
 {
-	"name" : "__MSG_name__",
-	"description" : "__MSG_description__",
-	"version" : "1.0",
-	"manifest_version" : 2,
-	"default_locale" : "zh_CN",
-	"icons" : {
-		"16" : "icon.png",
-		"48" : "icon.png",
-		"128" : "icon.png"
+	"name": "__MSG_name__",
+	"description": "__MSG_description__",
+	"version": "1.0",
+	"manifest_version": 2,
+	"default_locale": "zh_CN",
+	"icons": {
+		"16": "icon.png",
+		"48": "icon.png",
+		"128": "icon.png"
 	},
-	"browser_action" : {
-		"default_icon" : "icon.png",
-		"default_title" : "__MSG_name__"
+	"browser_action": {
+		"default_icon": "icon.png",
+		"default_title": "__MSG_name__"
 	},
-	"background" : {
-		"scripts" : ["url.js", "chrome/RuleManager.js", "chrome/background.js"]
+	"background": {
+		"scripts": ["url.js", "chrome/RuleManager.js", "chrome/background.js"]
 	},
 	"content_security_policy": "script-src 'self' 'unsafe-eval';object-src 'self';",
-	"devtools_page" : "chrome/devtools.html",
-	"permissions" : [
-		"tabs", "<all_urls>", "storage"
+	"devtools_page": "chrome/devtools.html",
+	"permissions": [
+		"storage", "proxy"
 	],
-	"web_accessible_resources" : [
+	"web_accessible_resources": [
 	]
 }

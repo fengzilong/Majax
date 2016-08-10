@@ -1,4 +1,4 @@
-var inspectedWindowTabId = chrome.devtools.inspectedWindow.tabId;
+var inspectedWindowTabId = chrome.devtools && chrome.devtools.inspectedWindow.tabId;
 
 if( typeof inspectedWindowTabId !== 'undefined' ) {
 	var port = chrome.runtime.connect({
