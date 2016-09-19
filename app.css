@@ -184,6 +184,10 @@ table.data {
 	background-color: rgba(56, 121, 217, 0.1);
 }
 
+.data-container .name-column {
+	cursor: pointer;
+}
+
 td.name-column:hover {
 	text-decoration: underline;
 }
