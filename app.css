@@ -21,13 +21,14 @@ body {
 
 .panel {
 	position: absolute;
-	display: flex;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
 	z-index: 0;
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
 }
 
 .hbox {
@@ -50,6 +51,49 @@ body {
 	flex: 0;
 }
 
+.toolbar {
+	width: 100%;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	border-bottom: solid 1px #cdcdcd;
+	color: #666;
+	line-height: 1.1;
+}
+
+.toolbar-clear {
+	display: inline-block;
+	font-size: 14px;
+	padding: 0 8px;
+	border-right: solid 1px #DDD;
+}
+
+.toolbar-filters {
+	display: inline-block;
+	margin: 0 8px;
+}
+
+.toolbar-filter {
+	display: inline-block;
+	padding: 3px 7px;
+	border-radius: 10px;
+	margin: 0 1px;
+}
+
+.toolbar-filter:hover {
+	background-color: #DDD;
+	color: #333;
+}
+
+.toolbar-filter:active {
+	color: #000;
+}
+
+.toolbar-filter.active {
+	background-color: #DDD;
+	color: #333;
+}
+
 table {
 	table-layout: fixed;
 	border-spacing: 0;
@@ -68,10 +112,9 @@ th, td {
 }
 
 th {
-	border-bottom: 1px solid rgb(205, 205, 205);
-	border-left: 1px solid rgb(205, 205, 205);
+	border-bottom: 1px solid #cdcdcd;
+	border-left: 1px solid #cdcdcd;
 	background: white;
-
 	height: auto;
 	text-align: left;
 	font-weight: normal;
@@ -80,9 +123,6 @@ th {
 }
 
 td {
-	padding: 1px 4px;
-	-webkit-user-select: text;
-
 	padding: 1px 4px;
 	-webkit-user-select: text;
 	line-height: 17px;
@@ -142,10 +182,6 @@ table.data {
 
 .data-container tr:not(.data-grid-filler-row):not(.selected):hover {
 	background-color: rgba(56, 121, 217, 0.1);
-}
-
-.name-column {
-	cursor: pointer;
 }
 
 td.name-column:hover {

@@ -1,3 +1,7 @@
+// MIT licensed
+// Copyright (C) 2011-2012 Websanova http://www.websanova.com
+// https://github.com/websanova/js-url/blob/master/url.js
+
 window.url = (function() {
 
     function _t() {
@@ -46,7 +50,7 @@ window.url = (function() {
 
                 if (tmp) {
                     params[tmp[1]] = params[tmp[1]] || [];
-                
+
                     params[tmp[1]][tmp[2]] = field[2];
                 }
                 else {
@@ -121,7 +125,7 @@ window.url = (function() {
 
             // File.
             tmp = _i('/-1', _l.path.substring(1));
-            
+
             if (tmp && (tmp = tmp.match(/(.*?)\.(.*)/))) {
                 _l.file = tmp[0];
                 _l.filename = tmp[1];

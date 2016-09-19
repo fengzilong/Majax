@@ -21,7 +21,7 @@ var NetworkLogs = Regular.extend({
 		<div class="header-container">
 			<table class="header">
 				<colgroup>
-					{#if !briefMode}
+					{#if !brief}
 						<col style="width: 220px;">
 						<col style="width: 107px;">
 						<col style="width: 107px;">
@@ -38,7 +38,7 @@ var NetworkLogs = Regular.extend({
 						<th class="name-column">
 							<div>Name<div class="network-header-subtitle">Path</div></div><div class="sort-order-icon-container"><div class="sort-order-icon"></div></div>
 						</th>
-						{#if !briefMode}
+						{#if !brief}
 						<th class="status-column">
 							<div>Status<div class="network-header-subtitle">Text</div></div><div class="sort-order-icon-container"><div class="sort-order-icon"></div></div>
 						</th>
@@ -61,7 +61,7 @@ var NetworkLogs = Regular.extend({
 		<div class="data-container">
 			<table class="data">
 				<colgroup>
-					{#if !briefMode}
+					{#if !brief}
 						<col style="width: 220px;">
 						<col style="width: 107px;">
 						<col style="width: 107px;">
@@ -75,7 +75,7 @@ var NetworkLogs = Regular.extend({
 				</colgroup>
 				<tbody>
 					<tr class="data-grid-filler-row" style="height: 0px;">
-						{#if !briefMode}
+						{#if !brief}
 							<td class="top-filler-td"></td>
 							<td class="top-filler-td"></td>
 							<td class="top-filler-td"></td>
@@ -105,12 +105,12 @@ var NetworkLogs = Regular.extend({
 							{#else}
 								<img class="icon">
 							{/if}
-							{ v.request.request.path || '/' }
+							{ v.request.request.basename || '/' }
 							<div class="network-cell-subtitle">
-								{ v.request.request.domain }
+								{ v.request.request.url }
 							</div>
 						</td>
-						{#if !briefMode}
+						{#if !brief}
 						<td class="status-column">
 							{#if !v.request.response._error}
 								{ v.request.response.status }
@@ -145,7 +145,7 @@ var NetworkLogs = Regular.extend({
 					{/list}
 
 					<tr class="data-grid-filler-row" style="height: auto;">
-						{#if !briefMode}
+						{#if !brief}
 							<td class="bottom-filler-td"></td>
 							<td class="bottom-filler-td"></td>
 							<td class="bottom-filler-td"></td>
@@ -202,7 +202,7 @@ var Editor = Regular.extend({
 			"vScrollBarAlwaysVisible": false,
 			"highlightGutterLine": true,
 			"animatedScroll": false,
-			"showInvisibles": true,
+			"showInvisibles": false,
 			"showPrintMargin": false,
 			"printMarginColumn": 80,
 			"printMargin": false,
@@ -210,8 +210,9 @@ var Editor = Regular.extend({
 			"showFoldWidgets": true,
 			"showLineNumbers": true,
 			"showGutter": true,
-			"displayIndentGuides": true,
-			"fontSize": "12px",
+			"fixedWidthGutter": true,
+			"displayIndentGuides": false,
+			"fontSize": "13px",
 			"scrollPastEnd": 0,
 			"theme": "clouds",
 			"scrollSpeed": 2,
@@ -222,7 +223,7 @@ var Editor = Regular.extend({
 			"firstLineNumber": 1,
 			"overwrite": false,
 			"newLineMode": "auto",
-			"useWorker": true,
+			"useWorker": false,
 			"useSoftTabs": false,
 			"tabSize": 4,
 			"wrap": "off",
@@ -231,7 +232,7 @@ var Editor = Regular.extend({
 			"enableMultiselect": true,
 			"enableBlockSelect": true,
 		});
-		editor.setTheme("ace/theme/clouds");
+		editor.setTheme("ace/theme/chrome");
 
 		var modes = {
 			json: ace.require("ace/mode/json").Mode,
@@ -244,8 +245,8 @@ var Editor = Regular.extend({
 		editor.$blockScrolling = Infinity;
 
 		// 默认模式 -> plain_text
-		this.data.mode = 'plain_text';
-		editor.session.setMode( new modes.plain_text() );
+		this.data.mode = this.data.mode || 'plain_text';
+		editor.session.setMode( new modes[ this.data.mode ]() );
 
 		this.$watch('mode', function( nv, ov ) {
 			if( !( nv in modes ) ) {
@@ -255,6 +256,10 @@ var Editor = Regular.extend({
 		});
 		this.$watch('content', function( nv, ov ) {
 			editor.setValue( nv, -1 );
+		});
+		this.$watch('lint', function( v ) {
+			console.log( 'changed:lint', v );
+			editor.session.setOption('useWorker', v || false);
 		});
 	}
 });
@@ -270,7 +275,7 @@ var NetworkDetails = Regular.extend({
 				<input style="flex: 1;border: none;border-bottom: solid 1px #ccc;padding: 7px 10px;outline: none;height: 27px;" value="{ url }" type="text" />
 				<button style="height: 27px;margin-left: 10px;" on-click="{ this.onSave() }">Save</button>
 			</div>
-			<Editor content="{ content }" mode="{ mode }" on-change="{ this.onChange( $event ) }"></Editor>
+			<Editor content="{ content }" mode="{ mode }" lint="{ lint }" on-change="{ this.onChange( $event ) }"></Editor>
 		</div>
 	`,
 	onChange: function( v ) {
@@ -278,15 +283,7 @@ var NetworkDetails = Regular.extend({
 		this.data.detail.saveContent = v;
 	},
 	onSave: function() {
-		// https://randomuser.me/api?results=10&page=1&sortField=&sortOrder=
-		// TODO: 生成远程数据，并告知background设置proxy，同时拦截匹配的请求，带上相应的header，如X-Modify-Key: random
-		port.postMessage({
-			type: 'SAVE_PAC_SCRIPT',
-			payload: {
-				remote: `https://randomuser.me/api?results=10&page=1&sortField=&sortOrder=`,
-				pattern: `https://api.npms.io/search/*`,
-			}
-		});
+		// TODO: save
 	},
 	onClose: function() {
 		this.$emit( 'close' );
@@ -295,74 +292,80 @@ var NetworkDetails = Regular.extend({
 
 	},
 	computed: {
-		url: {
-			get: function() {
-				if( !this.data.detail ) {
-					return '';
-				}
-				return this.data.detail.saveUrl || this.data.detail.request.request.url;
-			},
-			set: function() {
-
+		url: function() {
+			if( !this.data.detail ) {
+				return '';
 			}
+			return this.data.detail.saveUrl || this.data.detail.request.request.url;
 		},
-		content: {
-			get: function() {
-				if( !this.data.detail ) {
-					return '';
-				}
-				var content = this.data.detail.saveContent || this.data.detail.content || '';
-				var mimeType = this.data.detail.request.response.content.mimeType;
-				if( mimeType === 'application/json' ) {
-					var parsed = {};
-					try {
-						parsed = JSON.parse( content );
-					} catch(e) {
-						return content;
-					}
-					return JSON.stringify(parsed, 0, 4).trim();
-				} else {
+		content: function() {
+			if( !this.data.detail ) {
+				return '';
+			}
+			var content = this.data.detail.saveContent || this.data.detail.content || '';
+			var mimeType = this.data.detail.request.response.content.mimeType;
+			if( mimeType === 'application/json' ) {
+				var parsed = {};
+				try {
+					parsed = JSON.parse( content );
+				} catch(e) {
 					return content;
 				}
-			},
-			set: function() {}
+				return JSON.stringify(parsed, 0, 4).trim();
+			} else {
+				return content.trim();
+			}
 		},
-		mode: {
-			get: function() {
-				if( !this.data.detail ) {
-					return 'plain_text';
-				}
-				var mimeType = this.data.detail.request.response.content.mimeType;
-				var mode = 'plain_text';
-				switch( mimeType ) {
-					case 'application/json':
-						mode = 'json';
-						break;
-					case 'application/javascript':
-						mode = 'javascript'
-						break;
-					case 'text/html':
-						mode = 'html';
-						break;
-					case 'text/css':
-						mode = 'css';
-						break;
-					default:
-						mode = 'plain_text';
-				}
-				return mode;
-			},
-			set: function() {}
+		mode: function() {
+			if( !this.data.detail ) {
+				return 'plain_text';
+			}
+			var mimeType = this.data.detail.request.response.content.mimeType;
+			var mode = 'plain_text';
+			switch( mimeType ) {
+				case 'application/json':
+					mode = 'json';
+					break;
+				case 'application/javascript':
+					mode = 'javascript'
+					break;
+				case 'text/html':
+					mode = 'html';
+					break;
+				case 'text/css':
+					mode = 'css';
+					break;
+				default:
+					mode = 'plain_text';
+			}
+			return mode;
+		},
+		lint: function() {
+			if( ~'json'.split( ' ' ).indexOf( this.$get( 'mode' ) ) ) {
+				return true;
+			}
+
+			return false;
 		}
 	}
 });
 
 var App = Regular.extend({
 	template: `
-		<div class="hbox">
+		<div class="toolbar">
+			<div class="iconfont toolbar-clear">&#xe600;</div>
+			<div class="toolbar-filters">
+				{#list filters as filter}
+				<div class="toolbar-filter { filtering === filter ? 'active' : '' }" on-click="{ this.onFilter( filter ) }">
+					{ filter }
+				</div>
+				{/list}
+			</div>
+		</div>
+		<div class="hbox flex-auto">
 			<div class="vbox { showDetail ? 'flex-none brief' : '' }">
 				<NetworkLogs
-					briefMode="{ showDetail }"
+					brief="{ showDetail }"
 					on-select="{ this.onSelect( $event ) }"
 				></NetworkLogs>
 			</div>
@@ -380,15 +383,26 @@ var App = Regular.extend({
 	onSelect: function( v ) {
 		this.data.request = v;
 		this.data.showDetail = true;
-		console.log( 'selected' );
 		this.$update();
 	},
 	onCloseDetail: function() {
 		this.data.showDetail = false;
 		this.$update();
 	},
+	onFilter: function( filter ) {
+
+	},
 	config: function() {
 		this.data.showDetail = false;
+		this.data.filters = [
+			'All',
+			'JSON',
+			'Doc',
+			'JS',
+			'CSS',
+			'Img'
+		];
+		this.data.filtering = this.data.filters[ 0 ];
 	}
 })
 
