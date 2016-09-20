@@ -14,10 +14,10 @@
 		"default_title": "__MSG_name__"
 	},
 	"background": {
-		"scripts": ["url.js", "chrome/background.js"]
+		"scripts": ["url.js", "background.js"]
 	},
 	"content_security_policy": "script-src 'self' 'unsafe-eval';object-src 'self';",
-	"devtools_page": "chrome/devtools.html",
+	"devtools_page": "devtools.html",
 	"permissions": [
 		"storage"
 	],
