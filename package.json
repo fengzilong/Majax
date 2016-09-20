@@ -1,0 +1,30 @@
+{
+  "name": "network-plus",
+  "version": "1.0.0",
+  "description": "network plus lives in your chrome devtools",
+  "main": "app.js",
+  "scripts": {
+    "dev": "onchange \"src\" -i -v -- npm run build",
+    "build": "bubleup ./src/index.js -d dist --format umd --name index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fengzilong/network-plus.git"
+  },
+  "keywords": [
+    "network",
+    "chrome",
+    "extension",
+    "devtools"
+  ],
+  "author": "fengzilong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fengzilong/network-plus/issues"
+  },
+  "homepage": "https://github.com/fengzilong/network-plus#readme",
+  "devDependencies": {
+    "onchange": "^3.0.2",
+    "regularjs": "^0.5.1"
+  }
+}
